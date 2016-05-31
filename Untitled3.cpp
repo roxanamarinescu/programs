@@ -269,7 +269,7 @@ void createHeap(int n,struct nod *root){
 }
 
 /*DFS*/
-void citire(int nrNoduri, int nrMuchii, FILE *test){
+void citire_cu_muchii(FILE *test){
     int i, j, source ,target;
     if (test == NULL) {
         printf("Error: Fisierul este gol.");
@@ -289,45 +289,65 @@ void citire(int nrNoduri, int nrMuchii, FILE *test){
     }
 }
 
-void dfs (struct node *head, int nodStart){
+// DFS cu stiva
+void dfs_stack (struct node *head, int nodStart){
     int i;
     push_first(head, nodStart);
-    while(head->next != NULL){
-        nodStart = pop_first(head);
-        vizitat[nodStart] = 1;
-        printf("%d",nodStart);
-        for(i = nrNoduri - 1; i >= 0;i--){
-            if(matrice[nodStart][i] == 1 && vizitat[i] == 0){
-                push_first(head,i);
-            }
-        }
-    }
-}
-
-void dfs( int nodStart){
-    int i,offset;
-
     vizitat[nodStart] = 1;
-    for (i=0;i<nrNoduri;i++){
-        if (vizitat[i] == 0 && matrice[nodStart][i] == 1){
-            printf("nodStart");
-            dfs(vizitat,i);
+    printf("%d  ",nodStart);
+    nodStart = pop_first(head);
+    for(i = 0; i < nrNoduri;i++){
+        if(matrice[nodStart][i] == 1 && vizitat[i] == 0){
+                vizitat[i] = 1;
+
+                dfs(head, i);
         }
     }
 }
 
-/*BFS*/
-void bsf (struct node *head, int nodStart){
+// dfs cu vectori;
+void dfs_arr(int nodStart){
     int i;
-    push_last(head, nodStart);
-    while(head->next != NULL){
-        nodStart = pop_first(head);
-        vizitat[nodStart] = 1;
-        printf("%d",nodStart);
-        for(i = nrNoduri - 1; i >= 0;i--){
-            if(matrice[nodStart][i] == 1 && vizitat[i] == 0){
-                push_last(head,i);
-            }
+    vizitat[nodStart] = 1;
+    for(i=1;i<=nrNoduri;i++){
+        if(matrice[nodStart][i] == 1 && vizitat[i] == 0){
+            printf("\n %d->%d", nodStart, i);
+            dfs(i, nrNoduri);
         }
     }
+}
+
+
+void citire( FILE *test){
+    int i, j;
+    if (test == NULL) {
+        printf("Error: Fisierul este gol.");
+        exit(1);
+    }
+
+    for(i=1;i<=nrNoduri;i++){
+        vizitat[i]=0;
+    }
+
+    for(i=1;i<=nrNoduri;i++){
+        for(j=1;j<=nrNoduri;j++){
+            fscanf(test,"%d",&matrice[i][j]);
+        }
+    }
+}
+//bfs- corect????? cu cozi
+
+void bfs(struct node *head, int nodStart){
+    int i;
+    push_last(head,nodStart);
+    vizitat[nodStart] = 1;
+    printf("%d ", nodStart);
+    pop_first(head);
+    for(i=0;i < nrNoduri;i++){
+        if(matrice[nodStart][i] == 1 && vizitat[i] == 0){
+            vizitat[i] = 1;
+            bfs(head, i);
+        }
+    }
+
 }
